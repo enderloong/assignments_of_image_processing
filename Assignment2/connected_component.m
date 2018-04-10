@@ -16,7 +16,6 @@ function connected_component()
     % Region 1, no. of pixels = {number of pixels}
     % Region 2, no. of pixels = {number of pixels}
     % ...
-    regions = [];
     [m, n] = size(BW);
     BW_mk = zeros([m,n]);
     ext_BW = zeros([m+1, n+2]);
@@ -28,28 +27,28 @@ function connected_component()
         for j = 1:n
             if(ext_BW(i+1 , j+1) > 0)
                 if(sum(sum(ext_BW(i:i+1, j:j+1)) + ext_BW(i,j+2) > 1))
-                    ext_mk(i+1, j+1) = max(ext_mk(i,j), ext_mk(i+1,j), ext_mk(i,j+1), ext_mk(i,j+2));
-                    if ((ext_mk(i,j) > 0) &(ext_mk(i,j) ~= ext_mk(i+1, j+1)))
-                        ext_mk(ext_mk == ext_mk(i,j)) = ext_mk(i+1, j+1)
+                    ext_mk(i+1, j+1) = max([ext_mk(i,j), ext_mk(i+1,j), ext_mk(i,j+1), ext_mk(i,j+2)]);
+                    if ((ext_mk(i,j) > 0) && (ext_mk(i,j) ~= ext_mk(i+1, j+1)))
+                        ext_mk(ext_mk == ext_mk(i,j)) = ext_mk(i+1, j+1);
                     end
-                    if ((ext_mk(i+1,j) > 0) &(ext_mk(i+1,j) ~= ext_mk(i+1, j+1)))
-                        ext_mk(ext_mk == ext_mk(i+1,j)) = ext_mk(i+1, j+1)
+                    if ((ext_mk(i+1,j) > 0) && (ext_mk(i+1,j) ~= ext_mk(i+1, j+1)))
+                        ext_mk(ext_mk == ext_mk(i+1,j)) = ext_mk(i+1, j+1);
                     end
-                    if ((ext_mk(i,j+1) > 0) &(ext_mk(i,j+1) ~= ext_mk(i+1, j+1)))
-                        ext_mk(ext_mk == ext_mk(i,j+1)) = ext_mk(i+1, j+1)
+                    if ((ext_mk(i,j+1) > 0) && (ext_mk(i,j+1) ~= ext_mk(i+1, j+1)))
+                        ext_mk(ext_mk == ext_mk(i,j+1)) = ext_mk(i+1, j+1);
                     end
-                    if ((ext_mk(i,j+2) > 0) &(ext_mk(i,j+2) ~= ext_mk(i+1, j+1)))
-                        ext_mk(ext_mk == ext_mk(i,j+2)) = ext_mk(i+1, j+1)
+                    if ((ext_mk(i,j+2) > 0) && (ext_mk(i,j+2) ~= ext_mk(i+1, j+1)))
+                        ext_mk(ext_mk == ext_mk(i,j+2)) = ext_mk(i+1, j+1);
                     end
                 else
                     ext_mk(i+1, j+1) = region_id;
-                    region_id = region_id + 1
+                    region_id = region_id + 1;
                 end
             end
         end
     end
     % relabel
-    extrel_mk = zeros([m,n])
+    extrel_mk = zeros([m,n]);
     rel_id = 1;
     iter_id = 1;
     ccnum = [];
@@ -59,7 +58,7 @@ function connected_component()
             extrel_mk(ext_mk == iter_id) = rel_id;
             rel_id = rel_id + 1;
             ccnum = [ccnum; rel_id, numOfPix];
-            disp(['Region', rel_id, ', no. of pixels = ', numOfPix]);
+            disp(['Region ', num2str(rel_id - 1), ', no. of pixels = ', num2str(numOfPix)]);
         end
         iter_id = iter_id + 1;
     end
@@ -70,8 +69,8 @@ function connected_component()
 	% TODO_2: Find the largest connected component in binary format (0,1).
 	% L_CC = ??
     ext_LCC = zeros([m+1, n+2]);
-    [max_num, max_id] = max(ccnum(:,2));
-    ext_LCC = extrel_mk(extrel_mk == max_id);
+    [~, max_id] = max(ccnum(:,2));
+    ext_LCC(extrel_mk == max_id) = 1;
     L_CC = ext_LCC(2:m, 2:n+1);
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
