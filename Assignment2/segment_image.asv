@@ -115,22 +115,22 @@ FirstThreshold = T;
 % Gaussian distributions.
 %
 % SecondThreshold = ?
-T = (Mu(2) + Mu(3))/2;
-dist = abs(Mu(3) - Mu(2));
+T = (Mu(2) + Mu(2))/2;
+dist = abs(Mu(2) - Mu(1));
 iter = 1;
+score_1 = Weight(1) * normpdf(T, Mu(1), Sigma(1));
 score_2 = Weight(2) * normpdf(T, Mu(2), Sigma(2));
-score_3 = Weight(3) * normpdf(T, Mu(3), Sigma(3));
-while abs(score_2 - score_3) > 1e-3
+while abs(score_1 - score_2) > 1e-3
     iter = iter + 1;
-    if score_2 > score_3
+    if score_1 > score_2
         T = T + dist * 0.5^iter;
     else
         T = T - dist * 0.5^iter;
     end
+    score_1 = Weight(1) * normpdf(T, Mu(1), Sigma(1));
     score_2 = Weight(2) * normpdf(T, Mu(2), Sigma(2));
-    score_3 = Weight(3) * normpdf(T, Mu(3), Sigma(3));
 end
-SecondThreshold = T;
+FirstThreshold = T;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Show the segmentation results.
